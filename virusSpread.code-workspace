@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/.git": true,
+        },
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+    },
+    "extensions": {
+        "recommendations": [
+            "mhutchie.git-graph",
+            "ms-python.python"
+        ]
+    }
+}
