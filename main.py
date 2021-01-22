@@ -1,58 +1,68 @@
 import pygame
 
+WIN_HEIGHT = 480
+WIN_WIDTH = 640
+BLACK = (0, 0, 0)
 
 clock = pygame.time.Clock()
 pygame.init()
-screen = pygame.display.set_mode((640,480))
-background = pygame.Surface(screen.get_size())
-background.fill((255, 200, 200)) # R G B
-pygame.display.set_caption("VirusTracking")
 
+class Rocket:
+    __width = 20
+    __height = 50
+    
+    def __init__(self, surface, color):
+        self.surface = surface
+        self.color = color
+        self.x = surface.get_width()//2 - self.__width //2
+        self.y = surface.get_height()
+        pass
 
+    def fly(self):
+        pygame.draw.rect(self.surface, 
+                        self.color,
+                        (self.x, self.y,
+                        self.__width,
+                        self.__height))
+        self.y -= 3
+        if self.y < -self.__height:
+            self.y = WIN_HEIGHT
+        pass
 
 mainloop = True
 
-radius = 30
-WIDTH, HEIGHT = screen.get_size()
-RED = (255, 0, 0)
+screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 
-x = 0 - radius
-y = HEIGHT // 4
+# background = pygame.Surface(screen.get_size())
+# background.fill((255, 200, 200)) # R G B
+pygame.display.set_caption("VirusTracking")
 
-field_height = HEIGHT // 2
+rect_left = pygame.Rect(
+    (0, 0), (WIN_WIDTH // 2, WIN_HEIGHT))
+surf_left = pygame.Surface(
+    (rect_left.width, rect_left.height))
+surf_left.fill((255,255,255))
 
-field = pygame.Surface((WIDTH, field_height))
-field.fill((0, 255, 0))
 
-y_field = 0 - field_height
+screen.blit(surf_left, rect_left)
+
+rocket_left = Rocket(surf_left, BLACK)
+pygame.display.update()
 
 while mainloop:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             print("QUIT")
             mainloop = False
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if rect_left.collidepoint(event.pos):
+                print("click in ")
 
-    screen.blit(background,(0,0))
+    surf_left.fill((255,255,255))
+    rocket_left.fly()
+    screen.blit(surf_left, rect_left)
+    pygame.display.update(rect_left)
 
-    field.fill((0, 255, 0))
-
-    pygame.draw.circle(field, RED, (x, y), radius)
-    screen.blit(field,(0, y_field))
-
-    if y_field >= HEIGHT + field_height:
-        y_field = 0 - field_height
-    else:
-        y_field += 1
-
-    if x >= WIDTH + radius:
-        # перемещаем его за левую
-        x = 0 - radius
-    else:  # Если еще нет,
-        # на следующей итерации цикла
-        # круг отобразится немного правее
-        x += 2
-
-    pygame.display.flip()
     clock.tick(60)
 
 pygame.quit()
