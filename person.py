@@ -1,30 +1,40 @@
 import pygame
 import settings
+import random
 
 class Person():
     __radius = 10
     __v = (10,-50)
     __g = (0, -10)
-    def __init__(self, screen, surface):
+    def __init__(self, surface):
         self.surface = surface
-        self.screen = screen 
         self.color = settings.BLUE
         self.isJumping = False
         self.rect = pygame.draw.circle(self.surface, 
                         self.color,
                         (100, 100),
                         self.__radius)
-    
+
+    def get_rect(self):
+        return self.rect
+
+    def clicked(self, pos):
+        if self.rect.collidepoint(pos):
+            self.color = settings.RED
+
     def move(self, v):
         self.rect.move_ip(v)
-        print(self.rect)
         pass
 
+    def random_move(self):
+        self.rect.move_ip((random.randint(-1,1),random.randint(-1,1)))
+
     def draw(self):
-        self.screen.blit(self.surface, self.rect)
         if self.isJumping:
             self.jumpSequence()
+        pygame.draw.circle(self.surface, self.color, self.rect.center, self.__radius)
     
+
     def jump(self):
         self.isJumping = True
     
