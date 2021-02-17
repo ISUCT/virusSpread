@@ -6,21 +6,27 @@ class Person():
     __radius = 10
     __v = (10,-50)
     __g = (0, -10)
-    def __init__(self, surface):
+    def __init__(self, surface, is_sick=None):
+        if is_sick:
+            self.is_sick = is_sick
+        else: self.is_sick = False
+        self.is_cured = False
         self.surface = surface
         self.color = settings.BLUE
         self.isJumping = False
+        self.x_pos = random.randint(0,100)
+        self.y_pos = random.randint(0,100)
         self.rect = pygame.draw.circle(self.surface, 
                         self.color,
-                        (100, 100),
+                        (self.x_pos, self.y_pos),
                         self.__radius)
 
     def get_rect(self):
         return self.rect
 
     def clicked(self, pos):
-        if self.rect.collidepoint(pos):
-            self.color = settings.RED
+        if self.rect.collidepoint(pos) and not self.is_cured:
+            self.person_cure()
 
     def move(self, v):
         self.rect.move_ip(v)
@@ -45,5 +51,23 @@ class Person():
         self.move(self.__v)
         self.__v = (self.__v[0] - self.__g[0],
          self.__v[1] - self.__g[1])
+        pass
+
+    def person_sick(self):
+        self.__is_sick = True
+        self.color = settings.RED
+        print("Person is sick")
+
+    def person_cure(self):
+        self.is_sick = False
+        self.is_cured = True
+        self.color = settings.GREEN
+        print("Person is cured")
+    
+    def check_collisions(self, persons):
+        for person in persons:
+            if self.rect.colliderect(person.rect) and person.is_sick and not person.is_cured:
+                # print("Got collision")
+                self.person_sick()
         pass
         

@@ -13,7 +13,7 @@ pygame.display.set_caption(conf.title)
 surface = pygame.Surface(screen.get_size())
 surface.fill(conf.bg_color)
 
-p1 = Person(surface)
+p1 = Person(surface, True)
 p2 = Person(surface)
 
 persons = [p1, p2, Person(surface)]
@@ -45,6 +45,7 @@ while mainloop:
                 person.clicked(event.pos)
 
     for person in persons:
+        person.check_collisions(persons)
         person.random_move()
         person.draw()
     screen.blit(surface, (0,0))
