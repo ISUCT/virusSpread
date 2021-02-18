@@ -4,18 +4,19 @@ import random
 
 class Person():
     __radius = 10
+    __infection_r = 25
+    __inf_width = 1
     __v = (10,-50)
     __g = (0, -10)
-    def __init__(self, surface, is_sick=None):
-        if is_sick:
-            self.is_sick = is_sick
-        else: self.is_sick = False
+    def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100)):
+        self.__is_sick = is_sick
+        # else: self.is_sick = False
         self.is_cured = False
         self.surface = surface
         self.color = settings.BLUE
         self.isJumping = False
-        self.x_pos = random.randint(0,100)
-        self.y_pos = random.randint(0,100)
+        self.x_pos = x
+        self.y_pos = y
         self.rect = pygame.draw.circle(self.surface, 
                         self.color,
                         (self.x_pos, self.y_pos),
@@ -38,7 +39,10 @@ class Person():
     def draw(self):
         if self.isJumping:
             self.jumpSequence()
-        pygame.draw.circle(self.surface, self.color, self.rect.center, self.__radius)
+        self.rect = pygame.draw.circle(self.surface, self.color, self.rect.center, self.__radius)
+        if self.__is_sick:
+            self.rect = pygame.draw.circle(self.surface, self.color, self.rect.center, self.__infection_r, self.__inf_width)
+            pygame.draw.rect(self.surface, self.color,(self.rect.left,self.rect.top, self.rect.width, self.rect.height),1)
     
 
     def jump(self):
@@ -56,17 +60,17 @@ class Person():
     def person_sick(self):
         self.__is_sick = True
         self.color = settings.RED
-        print("Person is sick")
+        # print("Person is sick")
 
     def person_cure(self):
-        self.is_sick = False
+        self.__is_sick = False
         self.is_cured = True
         self.color = settings.GREEN
         print("Person is cured")
     
     def check_collisions(self, persons):
         for person in persons:
-            if self.rect.colliderect(person.rect) and person.is_sick and not person.is_cured:
+            if self.rect.colliderect(person.rect) and person.__is_sick and not person.is_cured:
                 # print("Got collision")
                 self.person_sick()
         pass

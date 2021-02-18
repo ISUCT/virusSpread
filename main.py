@@ -13,10 +13,10 @@ pygame.display.set_caption(conf.title)
 surface = pygame.Surface(screen.get_size())
 surface.fill(conf.bg_color)
 
-p1 = Person(surface, True)
-p2 = Person(surface)
+p1 = Person(surface, True, x=200, y=200)
+p2 = Person(surface, x=230, y=230)
 
-persons = [p1, p2, Person(surface)]
+persons = [p1, p2, Person(surface, x=170, y=170)]
 
 screen.blit(surface, (0,0))
 
@@ -44,7 +44,11 @@ while mainloop:
             for person in persons:
                 person.clicked(event.pos)
 
+    
     for person in persons:
+        # collisions = pygame.Rect.collidelistall(persons)
+        coll = person.rect.collidelist(persons)
+        print(coll)
         person.check_collisions(persons)
         person.random_move()
         person.draw()
@@ -53,6 +57,6 @@ while mainloop:
     pygame.display.flip()
     # pygame.display.update()
     # pygame.display.update(rect_left)
-    clock.tick(60)
+    clock.tick(10)
 
 pygame.quit()
