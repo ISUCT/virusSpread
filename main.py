@@ -1,5 +1,7 @@
 import pygame
 import settings
+import random
+
 from person import Person
 
 conf = settings.AppSettings()
@@ -14,9 +16,11 @@ surface = pygame.Surface(screen.get_size())
 surface.fill(conf.bg_color)
 
 p1 = Person(surface, True, x=200, y=200)
-p2 = Person(surface, x=230, y=230)
+p2 = Person(surface, x=250, y=250)
 
-persons = [p1, p2, Person(surface, x=170, y=170)]
+persons = [p1, p2, Person(surface, x=110, y=110)]
+for i in range(10):
+    persons.append(Person(surface, x=random.randint(0, conf.scr_width) ,y=random.randint(0,conf.scr_height)))
 
 screen.blit(surface, (0,0))
 
@@ -26,6 +30,10 @@ dir = {pygame.K_LEFT: (-5, 0),
         pygame.K_RIGHT: (5, 0), 
         pygame.K_UP: (0, -5),
         pygame.K_DOWN: (0, 5)}
+
+start = (0, 0)
+size = (0, 0)
+drawing = False
 
 while mainloop:
     surface.fill(conf.bg_color)
@@ -39,24 +47,34 @@ while mainloop:
                 p1.move(v)
             if event.key ==pygame.K_SPACE:
                 print("Space")
-                p1.jump()
+                # p1.jump()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             for person in persons:
                 person.clicked(event.pos)
+            start = event.pos
+            size = 0, 0
+            drawing = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            end = event.pos
+            size = end[0] - start[0], end[1] - start[1]
+            drawing = False
+        elif event.type == pygame.MOUSEMOTION and drawing:
+            end = event.pos
+            size = end[0] - start[0], end[1] - start[1]
 
     
     for person in persons:
-        # collisions = pygame.Rect.collidelistall(persons)
         coll = person.rect.collidelist(persons)
         print(coll)
         person.check_collisions(persons)
         person.random_move()
         person.draw()
     screen.blit(surface, (0,0))
+    
+    pygame.draw.rect(screen, settings.RED, (start, size))
+    # pygame.display.update()
 
     pygame.display.flip()
-    # pygame.display.update()
-    # pygame.display.update(rect_left)
     clock.tick(10)
 
 pygame.quit()
