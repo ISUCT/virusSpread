@@ -6,15 +6,15 @@ class Person():
     __radius = 10
     __infection_r = 25
     __inf_width = 1
-    __v = (10,-50)
-    __g = (0, -10)
+    # __v = (10,-50)
+    # __g = (0, -10)
     def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100)):
         self.__is_sick = is_sick
         # else: self.is_sick = False
         self.is_cured = False
         self.surface = surface
         self.color = settings.BLUE
-        self.isJumping = False
+        # self.isJumping = False
         self.x_pos = x
         self.y_pos = y
         self.rect = pygame.draw.circle(self.surface, 
@@ -34,31 +34,32 @@ class Person():
         pass
 
     def random_move(self):
-        self.rect.move_ip((random.randint(-1,1),random.randint(-1,1)))
+        self.rect.move_ip((random.randint(-5,5),random.randint(-5,5)))
 
     def draw(self):
-        if self.isJumping:
-            self.jumpSequence()
+        # if self.isJumping:
+        #     self.jumpSequence()
         self.rect = pygame.draw.circle(self.surface, self.color, self.rect.center, self.__radius)
         if self.__is_sick:
             self.rect = pygame.draw.circle(self.surface, self.color, self.rect.center, self.__infection_r, self.__inf_width)
-            pygame.draw.rect(self.surface, self.color,(self.rect.left,self.rect.top, self.rect.width, self.rect.height),1)
+
     
 
-    def jump(self):
-        self.isJumping = True
+    # def jump(self):
+    #     self.isJumping = True
     
-    def jumpSequence(self):
-        if self.rect.y + 2*self.__radius + self.__v[1] > self.surface.get_height()-100:
-            self.isJumping = False
-            return
-        self.move(self.__v)
-        self.__v = (self.__v[0] - self.__g[0],
-         self.__v[1] - self.__g[1])
-        pass
+    # def jumpSequence(self):
+    #     if self.rect.y + 2*self.__radius + self.__v[1] > self.surface.get_height()-100:
+    #         self.isJumping = False
+    #         return
+    #     self.move(self.__v)
+    #     self.__v = (self.__v[0] - self.__g[0],
+    #      self.__v[1] - self.__g[1])
+    #     pass
 
     def person_sick(self):
         self.__is_sick = True
+        self.is_cured = False
         self.color = settings.RED
         # print("Person is sick")
 
