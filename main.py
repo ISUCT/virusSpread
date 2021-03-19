@@ -19,7 +19,7 @@ p1 = Person(surface, True, x=200, y=200)
 p2 = Person(surface, x=250, y=250)
 
 persons = [p1, p2, Person(surface, x=110, y=110)]
-for i in range(10):
+for i in range(100):
     persons.append(Person(surface, x=random.randint(0, conf.scr_width) ,y=random.randint(0,conf.scr_height)))
 
 screen.blit(surface, (0,0))
@@ -62,7 +62,13 @@ while mainloop:
             end = event.pos
             size = end[0] - start[0], end[1] - start[1]
 
+
+    wall = pygame.draw.rect(surface, settings.BLACK, (start, size))
+    indexies = wall.collidelistall(persons)
+    for i in indexies:
+        persons[i].move_out_wall(wall)
     
+
     for person in persons:
         coll = person.rect.collidelist(persons)
         print(coll)
@@ -70,8 +76,8 @@ while mainloop:
         person.random_move()
         person.draw()
     screen.blit(surface, (0,0))
+
     
-    pygame.draw.rect(screen, settings.RED, (start, size))
     # pygame.display.update()
 
     pygame.display.flip()

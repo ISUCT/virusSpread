@@ -35,6 +35,16 @@ class Person():
 
     def random_move(self):
         self.rect.move_ip((random.randint(-5,5),random.randint(-5,5)))
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.right > self.surface.get_width():
+            self.rect.right = self.surface.get_width()
+        if self.rect.bottom > self.surface.get_height():
+            self.rect.bottom = self.surface.get_height()
+
+        
 
     def draw(self):
         # if self.isJumping:
@@ -75,4 +85,16 @@ class Person():
                 # print("Got collision")
                 self.person_sick()
         pass
+    
+    def move_out_wall(self, rect):
+        self.color = settings.GREEN
+        if self.rect.right > rect.left:
+            self.rect.right = rect.left
+        if self.rect.bottom > rect.top:
+            self.rect.bottom = rect.top
+        if self.rect.top > rect.bottom:
+            self.rect.top = rect.bottom
+        if self.rect.left > rect.right:
+            self.rect.left = rect.right
+        
         
