@@ -76,15 +76,15 @@ class Person():
     def person_sick(self):
         self.__is_sick = True
         self.is_cured = False
-        self.game_state.analytics.sick_people_count =+ 1
+        self.game_state.analytics.update_sick_people(1)
         self.color = settings.RED
         # print("Person is sick")
 
     def person_cure(self):
         self.__is_sick = False
         self.is_cured = True
-        self.game_state.analytics.sick_people_count =- 1
-        self.game_state.analytics.cured_people_count =+ 1
+        self.game_state.analytics.update_sick_people(-1)
+        self.game_state.analytics.update_cured_people(1)
         self.color = settings.GREEN
         print("Person is cured")
     

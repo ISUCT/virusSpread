@@ -17,3 +17,9 @@ class GameAnalytics():
     def print_stats(self):
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(self.stats)
+    
+    def update_sick_people(self, value):
+        self.sick_people_count += value
+    
+    def update_cured_people(self, value):
+        self.cured_people_count += value
