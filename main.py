@@ -97,6 +97,7 @@ while mainloop:
     game_state.analytics.update_stats()
 
 analytics.print_stats()
+analytics.plot_data()
 pygame.quit()
 
 
