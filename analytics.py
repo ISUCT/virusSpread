@@ -13,7 +13,6 @@ class GameAnalytics():
         self.stats.update({self.current_frame: {"People count": self.people_count,
                                            "Sick": self.sick_people_count,
                                            "Cured": self.cured_people_count}})
-        # [self.sick_people_count, self.cured_people_count, self.people_count]
     
     def print_stats(self):
         pp = pprint.PrettyPrinter(indent=4)
