@@ -48,6 +48,7 @@ class Person():
     def handle_sickness_init(self, sickness_status):
         if sickness_status:
             self.game_state.analytics.sick_people_count += 1
+            self.color = settings.RED
             return sickness_status
         else:
             return sickness_status

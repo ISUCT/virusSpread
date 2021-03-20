@@ -28,8 +28,7 @@ class GameAnalytics():
     def plot_data(self):
         self.sick_stats = []
         self.cured_stats = []
-        self.seconds = [key * (1 /self.tick_rate) for key in self.stats.keys()]##self.stats.keys()
-
+        self.seconds = [key * (1 / self.tick_rate) for key in self.stats.keys()]
         for item in self.stats:
             self.sick_stats.append(self.stats[item]["Sick"])
             self.cured_stats.append(self.stats[item]["Cured"])
