@@ -7,8 +7,8 @@ BLUE = (0, 0, 255)
 class AppSettings:
     pass
     def __init__(self):
-        self.scr_height = 480
-        self.scr_width = 640
+        self.scr_height = 580
+        self.scr_width = 680
         self.bg_color = (230, 230, 230)
         self.title = "Virus"
         pass

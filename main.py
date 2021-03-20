@@ -3,6 +3,7 @@ import settings
 import random
 
 from person import Person
+from wall import Wall
 
 conf = settings.AppSettings()
 
@@ -34,6 +35,7 @@ dir = {pygame.K_LEFT: (-5, 0),
 start = (0, 0)
 size = (0, 0)
 drawing = False
+points = []
 
 while mainloop:
     surface.fill(conf.bg_color)
@@ -48,19 +50,32 @@ while mainloop:
             if event.key ==pygame.K_SPACE:
                 print("Space")
                 # p1.jump()
+                if len(points) > 0:
+                    points.pop()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             for person in persons:
                 person.clicked(event.pos)
             start = event.pos
             size = 0, 0
+            #drawing = True
+            points.append(event.pos)
             drawing = True
         elif event.type == pygame.MOUSEBUTTONUP:
-            end = event.pos
-            size = end[0] - start[0], end[1] - start[1]
             drawing = False
         elif event.type == pygame.MOUSEMOTION and drawing:
-            end = event.pos
-            size = end[0] - start[0], end[1] - start[1]
+            points[-1] = event.pos
+        #screen.fill(settings.BLACK)
+    if len(points)>1:
+        rect = pygame.draw.lines(screen, settings.BLACK, False, points, 5)
+        #pygame.draw.rect(screen, settings.GREEN, rect, 1)
+    pygame.display.update()
+        # elif event.type == pygame.MOUSEBUTTONUP:
+        #     end = event.pos
+        #     size = end[0] - start[0], end[1] - start[1]
+        #     drawing = False
+        # elif event.type == pygame.MOUSEMOTION and drawing:
+        #     end = event.pos
+        #     size = end[0] - start[0], end[1] - start[1]
 
 
     wall = pygame.draw.rect(surface, settings.BLACK, (start, size))
@@ -81,6 +96,6 @@ while mainloop:
     # pygame.display.update()
 
     pygame.display.flip()
-    clock.tick(10)
+    clock.tick(5) # FPS
 
 pygame.quit()
