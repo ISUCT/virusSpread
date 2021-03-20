@@ -46,29 +46,6 @@ class Person():
         if targetVectorLen <= self.__radius:
             self.targetReached = True
         self.rect.move_ip(self.targetVector)
-        # global X_move, X_move2, Y_move, Y_move2
-        # if self.x_pos != X_move and self.y_pos != Y_move:
-        #     self.rect.move_ip(X_move2, Y_move2)
-        # else:
-        #     X_move = random.randint(-25, 25)
-        #     Y_move = random.randint(-25, 25)
-        #     if X_move > 0:
-        #         X_move2 = 3
-        #     else:
-        #         X_move2 = -3
-        #     if Y_move > 0:
-        #         Y_move2 = 3
-        #     else:
-        #         Y_move2 = -3
-        # if self.rect.left < 0:
-        #     self.rect.left = 0
-        # if self.rect.top < 0:
-        #     self.rect.top = 0
-        # if self.rect.right > self.surface.get_width():
-        #     self.rect.right = self.surface.get_width()
-        # if self.rect.bottom > self.surface.get_height():
-        #     self.rect.bottom = self.surface.get_height()
-
         
 
     def draw(self):
