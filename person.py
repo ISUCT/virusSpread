@@ -90,7 +90,7 @@ class Person():
     
     def check_collisions(self, persons):
         for person in persons:
-            if self.rect.colliderect(person.rect) and person.__is_sick and not person.is_cured:
+            if self.rect.colliderect(person.rect) and not self.__is_sick and person.__is_sick and not person.is_cured:
                 # print("Got collision")
                 self.person_sick()
         pass

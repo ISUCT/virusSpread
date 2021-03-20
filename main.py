@@ -12,7 +12,7 @@ class GameState():
 
 
 conf = settings.AppSettings()
-analytics = GameAnalytics(conf.number_of_people)
+analytics = GameAnalytics(conf.number_of_people, conf.tick_rate)
 
 clock = pygame.time.Clock()
 pygame.init()
