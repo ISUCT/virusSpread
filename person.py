@@ -3,17 +3,6 @@ import settings
 import random
 conf = settings.AppSettings()
 
-# X_move = random.randint(conf.scr_width / 2, (conf.scr_width / 2) * -1)
-# Y_move = random.randint(-25, 25)
-# if X_move > 0:
-#     X_move2 = 3
-# else:
-#     X_move2 = -3
-# if Y_move > 0:
-#     Y_move2 = 3
-# else:
-#     Y_move2 = -3
-
 class Person():
     __radius = 10
     __infection_r = 25
@@ -28,11 +17,9 @@ class Person():
         self.color = settings.BLUE
         # self.isJumping = False
         self.targetReached = True
-        self.x_pos = x
-        self.y_pos = y
         self.rect = pygame.draw.circle(self.surface, 
                         self.color,
-                        (self.x_pos, self.y_pos),
+                        (x, y),
                         self.__radius)
 
     def get_rect(self):
@@ -50,11 +37,13 @@ class Person():
         if self.targetReached:
             self.targetPoint = (random.randint(0+2*self.__radius, self.surface.get_width()-2*self.__radius),
             random.randint(0+2*self.__radius, self.surface.get_height()-2*self.__radius))
-            self.targetVector = (self.targetPoint[0] - self.x_pos, self.targetPoint[1] - self.y_pos) # Уменьшить длину вектора
-            targetVectorLen = (self.targetVector[0]**2 + self.targetVector[1]**2)**(1/2.0)
-            # self.targetVector = (self.targetVector[0]/targetVectorLen, self.targetVector[1]/targetVectorLen)
             self.targetReached = False
-        if self.x_pos == self.targetPoint[0] and self.x_pos == self.targetPoint[1]:
+        self.targetVector = (self.targetPoint[0] - self.rect.centerx, self.targetPoint[1] - self.rect.centery)
+        targetVectorLen = (self.targetVector[0]**2 + self.targetVector[1]**2)**(1/2.0)
+        self.targetVector = (self.targetVector[0]/targetVectorLen*(targetVectorLen/5), 
+            self.targetVector[1]/targetVectorLen*(targetVectorLen/5))
+        
+        if targetVectorLen <= self.__radius:
             self.targetReached = True
         self.rect.move_ip(self.targetVector)
         # global X_move, X_move2, Y_move, Y_move2
