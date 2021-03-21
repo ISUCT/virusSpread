@@ -9,6 +9,8 @@ class Person():
     __infection_r = 25
     __inf_width = 1
     __heal_time = 5000
+    __spd = 8
+    __inf_prob = 8
     # __v = (10,-50)
     # __g = (0, -10)
     def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100), game_state=None):
@@ -48,8 +50,8 @@ class Person():
             self.targetReached = False
         self.targetVector = (self.targetPoint[0] - self.rect.centerx, self.targetPoint[1] - self.rect.centery)
         targetVectorLen = (self.targetVector[0]**2 + self.targetVector[1]**2)**(1/2.0)
-        self.targetVector = (self.targetVector[0]/targetVectorLen*(targetVectorLen/5), 
-            self.targetVector[1]/targetVectorLen*(targetVectorLen/5))
+        self.targetVector = (self.targetVector[0]/targetVectorLen*self.__spd, 
+            self.targetVector[1]/targetVectorLen*self.__spd)
         
         if targetVectorLen <= self.__radius:
             self.targetReached = True
@@ -119,8 +121,8 @@ class Person():
             distance = math.sqrt(x**2+y**2)
             if distance < self.__radius + self.__infection_r   \
                 and person.__is_sick and not self.is_cured and not self.__is_sick:
-                # if random.randint(0, 100) <= 80: ## Currently there's 6% change to catch COVID while outdoors
-                self.person_sick()
+                if random.randint(0, 100) <= self.__inf_prob: ## Currently there's 6% change to catch COVID while outdoors
+                    self.person_sick()
     
     def move_out_wall(self, rect):
         self.color = settings.GREEN
