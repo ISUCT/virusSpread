@@ -1,27 +1,38 @@
 import pygame
 import settings
 import random
+from analytics import GameAnalytics
 
 from person import Person
 from wall import Wall
 
+class GameState():
+    def __init__(self, settings, analytics):
+        self.settings = settings
+        self.analytics = analytics
+
+
 conf = settings.AppSettings()
+analytics = GameAnalytics(conf.number_of_people, conf.tick_rate)
 
 clock = pygame.time.Clock()
 pygame.init()
 
-screen = pygame.display.set_mode((conf.scr_width, conf.scr_height))
-pygame.display.set_caption(conf.title)
+game_state = GameState(conf, analytics)
+game_state.analytics.current_frame = 0
+
+screen = pygame.display.set_mode((game_state.settings.scr_width, game_state.settings.scr_height))
+pygame.display.set_caption(game_state.settings.title)
 
 surface = pygame.Surface(screen.get_size())
-surface.fill(conf.bg_color)
+surface.fill(game_state.settings.bg_color)
 
-p1 = Person(surface, True, x=200, y=200)
-p2 = Person(surface, x=250, y=250)
+p1 = Person(surface, True, x=200, y=200, game_state=game_state)
+p2 = Person(surface, x=250, y=250, game_state=game_state)
 
-persons = [p1, p2, Person(surface, x=110, y=110)]
-for i in range(100):
-    persons.append(Person(surface, x=random.randint(0, conf.scr_width) ,y=random.randint(0,conf.scr_height)))
+persons = [p1, p2, Person(surface, x=110, y=110, game_state=game_state)]
+for i in range(game_state.settings.number_of_people):
+    persons.append(Person(surface, x=random.randint(0, game_state.settings.scr_width) ,y=random.randint(0,game_state.settings.scr_height), game_state=game_state))
 
 screen.blit(surface, (0,0))
 
@@ -38,7 +49,8 @@ drawing = False
 points = []
 
 while mainloop:
-    surface.fill(conf.bg_color)
+    game_state.analytics.current_frame += 1
+    surface.fill(game_state.settings.bg_color)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             print("QUIT")
@@ -77,16 +89,13 @@ while mainloop:
         #     end = event.pos
         #     size = end[0] - start[0], end[1] - start[1]
 
-
     wall = pygame.draw.rect(surface, settings.BLACK, (start, size))
     indexies = wall.collidelistall(persons)
+     
     for i in indexies:
         persons[i].move_out_wall(wall)
-    
 
     for person in persons:
-        coll = person.rect.collidelist(persons)
-        print(coll)
         person.check_collisions(persons)
         person.random_move()
         person.draw()
@@ -96,6 +105,11 @@ while mainloop:
     # pygame.display.update()
 
     pygame.display.flip()
-    clock.tick(5) # FPS
+    clock.tick(game_state.settings.tick_rate)
+    game_state.analytics.update_stats()
 
+analytics.print_stats()
+analytics.plot_data()
 pygame.quit()
+
+

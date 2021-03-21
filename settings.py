@@ -11,4 +11,6 @@ class AppSettings:
         self.scr_width = 680
         self.bg_color = (230, 230, 230)
         self.title = "Virus"
+        self.number_of_people = 100
+        self.tick_rate = 10
         pass

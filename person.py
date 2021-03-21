@@ -2,21 +2,29 @@ import pygame
 import settings
 import random
 conf = settings.AppSettings()
+import math
 
 class Person():
     __radius = 10
     __infection_r = 25
     __inf_width = 1
+    __heal_time = 5000
     # __v = (10,-50)
     # __g = (0, -10)
-    def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100)):
-        self.__is_sick = is_sick
+    def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100), game_state=None):
+        self.game_state = game_state
+        self.__is_sick = self.handle_sickness_init(is_sick)
         # else: self.is_sick = False
         self.is_cured = False
         self.surface = surface
         self.color = settings.BLUE
         # self.isJumping = False
         self.targetReached = True
+        self.x_pos = x
+        self.y_pos = y
+        self.sickTime = 0
+        if self.__is_sick:    
+            self.person_sick()
         self.rect = pygame.draw.circle(self.surface, 
                         self.color,
                         (x, y),
@@ -47,6 +55,23 @@ class Person():
             self.targetReached = True
         self.rect.move_ip(self.targetVector)
         
+        # These checks are rudundant
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.right > self.surface.get_width():
+            self.rect.right = self.surface.get_width()
+        if self.rect.bottom > self.surface.get_height():
+            self.rect.bottom = self.surface.get_height()
+
+    def handle_sickness_init(self, sickness_status):
+        if sickness_status:
+            self.game_state.analytics.sick_people_count += 1
+            self.color = settings.RED
+            return sickness_status
+        else:
+            return sickness_status
 
     def draw(self):
         # if self.isJumping:
@@ -54,6 +79,8 @@ class Person():
         self.rect = pygame.draw.circle(self.surface, self.color, self.rect.center, self.__radius)
         if self.__is_sick:
             self.rect = pygame.draw.circle(self.surface, self.color, self.rect.center, self.__infection_r, self.__inf_width)
+            if self.sickTime and pygame.time.get_ticks() - self.sickTime > self.__heal_time:
+                self.person_cure()
 
     
 
@@ -72,21 +99,28 @@ class Person():
     def person_sick(self):
         self.__is_sick = True
         self.is_cured = False
+        self.game_state.analytics.update_sick_people(1)
         self.color = settings.RED
-        # print("Person is sick")
+        self.sickTime = pygame.time.get_ticks()
 
     def person_cure(self):
         self.__is_sick = False
         self.is_cured = True
+        self.game_state.analytics.update_sick_people(-1)
+        self.game_state.analytics.update_cured_people(1)
         self.color = settings.GREEN
-        print("Person is cured")
     
     def check_collisions(self, persons):
-        for person in persons:
-            if self.rect.colliderect(person.rect) and person.__is_sick and not person.is_cured:
-                # print("Got collision")
+        indexies = self.rect.collidelistall(persons)
+        for i in indexies:
+            person = persons[i]
+            x = self.rect.centerx - person.rect.centerx
+            y = self.rect.centery - person.rect.centery
+            distance = math.sqrt(x**2+y**2)
+            if distance < self.__radius + self.__infection_r   \
+                and person.__is_sick and not self.is_cured and not self.__is_sick:
+                # if random.randint(0, 100) <= 80: ## Currently there's 6% change to catch COVID while outdoors
                 self.person_sick()
-        pass
     
     def move_out_wall(self, rect):
         self.color = settings.GREEN
@@ -98,5 +132,4 @@ class Person():
             self.rect.top = rect.bottom
         if self.rect.left > rect.right:
             self.rect.left = rect.right
-        
         
