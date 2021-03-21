@@ -66,6 +66,10 @@ while mainloop:
             start = event.pos
             size = 0, 0
             drawing = True
+            if button.collidepoint(event.pos):
+                print ("You press button")
+                analytics.print_stats()
+                analytics.plot_data()
         elif event.type == pygame.MOUSEBUTTONUP:
             end = event.pos
             size = end[0] - start[0], end[1] - start[1]
@@ -73,6 +77,11 @@ while mainloop:
         elif event.type == pygame.MOUSEMOTION and drawing:
             end = event.pos
             size = end[0] - start[0], end[1] - start[1]
+
+    button = pygame.draw.rect(surface, settings.RED, (20, 10, 50, 26))
+    font = pygame.font.SysFont(None, 19)
+    img = font.render('График', True, settings.BLUE)
+
 
     wall = pygame.draw.rect(surface, settings.BLACK, (start, size))
     indexies = wall.collidelistall(persons)
@@ -85,6 +94,8 @@ while mainloop:
         person.random_move()
         person.draw()
     screen.blit(surface, (0,0))
+    screen.blit(img, (20, 20))
+
 
     
     # pygame.display.update()
@@ -93,8 +104,7 @@ while mainloop:
     clock.tick(game_state.settings.tick_rate)
     game_state.analytics.update_stats()
 
-analytics.print_stats()
-analytics.plot_data()
+
 pygame.quit()
 
 
