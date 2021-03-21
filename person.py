@@ -10,8 +10,10 @@ class Person():
     __heal_time = 5000
     # __v = (10,-50)
     # __g = (0, -10)
-    def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100)):
-        self.__is_sick = is_sick
+    def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100), game_state=None):
+        self.game_state = game_state
+        self.__is_sick = self.handle_sickness_init(is_sick)
+        # else: self.is_sick = False
         self.is_cured = False
         self.surface = surface
         self.color = settings.BLUE
@@ -19,7 +21,7 @@ class Person():
         self.x_pos = x
         self.y_pos = y
         self.sickTime = 0
-        if is_sick:    
+        if self.__is_sick:    
             self.person_sick()
         self.rect = pygame.draw.circle(self.surface, 
                         self.color,
@@ -48,7 +50,13 @@ class Person():
         if self.rect.bottom > self.surface.get_height():
             self.rect.bottom = self.surface.get_height()
 
-        
+    def handle_sickness_init(self, sickness_status):
+        if sickness_status:
+            self.game_state.analytics.sick_people_count += 1
+            self.color = settings.RED
+            return sickness_status
+        else:
+            return sickness_status
 
     def draw(self):
         # if self.isJumping:
@@ -76,14 +84,16 @@ class Person():
     def person_sick(self):
         self.__is_sick = True
         self.is_cured = False
+        self.game_state.analytics.update_sick_people(1)
         self.color = settings.RED
         self.sickTime = pygame.time.get_ticks()
 
     def person_cure(self):
         self.__is_sick = False
         self.is_cured = True
+        self.game_state.analytics.update_sick_people(-1)
+        self.game_state.analytics.update_cured_people(1)
         self.color = settings.GREEN
-        print("Person is cured")
     
     def check_collisions(self, persons):
         indexies = self.rect.collidelistall(persons)
@@ -96,7 +106,6 @@ class Person():
                 and person.__is_sick and not self.is_cured and not self.__is_sick:
                 # if random.randint(0, 100) <= 80: ## Currently there's 6% change to catch COVID while outdoors
                 self.person_sick()
-                    
     
     def move_out_wall(self, rect):
         self.color = settings.GREEN
