@@ -85,9 +85,9 @@ while mainloop:
 
     wall = pygame.draw.rect(surface, settings.BLACK, (start, size))
     indexies = wall.collidelistall(persons)
+     
     for i in indexies:
         persons[i].move_out_wall(wall)
-    
 
     for person in persons:
         person.check_collisions(persons)
