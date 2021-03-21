@@ -4,6 +4,7 @@ import random
 from analytics import GameAnalytics
 
 from person import Person
+from wall import Wall
 
 class GameState():
     def __init__(self, settings, analytics):
@@ -45,6 +46,7 @@ dir = {pygame.K_LEFT: (-5, 0),
 start = (0, 0)
 size = (0, 0)
 drawing = False
+points = []
 
 while mainloop:
     game_state.analytics.current_frame += 1
@@ -60,23 +62,36 @@ while mainloop:
             if event.key ==pygame.K_SPACE:
                 print("Space")
                 # p1.jump()
+                if len(points) > 0:
+                    points.pop()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             for person in persons:
                 person.clicked(event.pos)
             start = event.pos
             size = 0, 0
+            #drawing = True
+            points.append(event.pos)
             drawing = True
             if button.collidepoint(event.pos):
                 print ("You press button")
                 analytics.print_stats()
                 analytics.plot_data()
         elif event.type == pygame.MOUSEBUTTONUP:
-            end = event.pos
-            size = end[0] - start[0], end[1] - start[1]
             drawing = False
         elif event.type == pygame.MOUSEMOTION and drawing:
-            end = event.pos
-            size = end[0] - start[0], end[1] - start[1]
+            points[-1] = event.pos
+        #screen.fill(settings.BLACK)
+    if len(points)>1:
+        rect = pygame.draw.lines(screen, settings.BLACK, False, points, 5)
+        #pygame.draw.rect(screen, settings.GREEN, rect, 1)
+    pygame.display.update()
+        # elif event.type == pygame.MOUSEBUTTONUP:
+        #     end = event.pos
+        #     size = end[0] - start[0], end[1] - start[1]
+        #     drawing = False
+        # elif event.type == pygame.MOUSEMOTION and drawing:
+        #     end = event.pos
+        #     size = end[0] - start[0], end[1] - start[1]
 
     button = pygame.draw.rect(surface, settings.RED, (20, 10, 50, 26))
     font = pygame.font.SysFont(None, 19)

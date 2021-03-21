@@ -1,6 +1,7 @@
 import pygame
 import settings
 import random
+conf = settings.AppSettings()
 import math
 
 class Person():
@@ -18,6 +19,7 @@ class Person():
         self.surface = surface
         self.color = settings.BLUE
         # self.isJumping = False
+        self.targetReached = True
         self.x_pos = x
         self.y_pos = y
         self.sickTime = 0
@@ -25,7 +27,7 @@ class Person():
             self.person_sick()
         self.rect = pygame.draw.circle(self.surface, 
                         self.color,
-                        (self.x_pos, self.y_pos),
+                        (x, y),
                         self.__radius)
 
     def get_rect(self):
@@ -40,7 +42,20 @@ class Person():
         pass
 
     def random_move(self):
-        self.rect.move_ip((random.randint(-5,5),random.randint(-5,5)))
+        if self.targetReached:
+            self.targetPoint = (random.randint(0+2*self.__radius, self.surface.get_width()-2*self.__radius),
+            random.randint(0+2*self.__radius, self.surface.get_height()-2*self.__radius))
+            self.targetReached = False
+        self.targetVector = (self.targetPoint[0] - self.rect.centerx, self.targetPoint[1] - self.rect.centery)
+        targetVectorLen = (self.targetVector[0]**2 + self.targetVector[1]**2)**(1/2.0)
+        self.targetVector = (self.targetVector[0]/targetVectorLen*(targetVectorLen/5), 
+            self.targetVector[1]/targetVectorLen*(targetVectorLen/5))
+        
+        if targetVectorLen <= self.__radius:
+            self.targetReached = True
+        self.rect.move_ip(self.targetVector)
+        
+        # These checks are rudundant
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.top < 0:
