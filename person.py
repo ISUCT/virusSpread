@@ -8,8 +8,9 @@ class Person():
     __inf_width = 1
     # __v = (10,-50)
     # __g = (0, -10)
-    def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100)):
-        self.__is_sick = is_sick
+    def __init__(self, surface, is_sick=False, x=random.randint(0,100), y=random.randint(0,100), game_state=None):
+        self.game_state = game_state
+        self.__is_sick = self.handle_sickness_init(is_sick)
         # else: self.is_sick = False
         self.is_cured = False
         self.surface = surface
@@ -44,7 +45,13 @@ class Person():
         if self.rect.bottom > self.surface.get_height():
             self.rect.bottom = self.surface.get_height()
 
-        
+    def handle_sickness_init(self, sickness_status):
+        if sickness_status:
+            self.game_state.analytics.sick_people_count += 1
+            self.color = settings.RED
+            return sickness_status
+        else:
+            return sickness_status
 
     def draw(self):
         # if self.isJumping:
@@ -70,18 +77,21 @@ class Person():
     def person_sick(self):
         self.__is_sick = True
         self.is_cured = False
+        self.game_state.analytics.update_sick_people(1)
         self.color = settings.RED
         # print("Person is sick")
 
     def person_cure(self):
         self.__is_sick = False
         self.is_cured = True
+        self.game_state.analytics.update_sick_people(-1)
+        self.game_state.analytics.update_cured_people(1)
         self.color = settings.GREEN
         print("Person is cured")
     
     def check_collisions(self, persons):
         for person in persons:
-            if self.rect.colliderect(person.rect) and person.__is_sick and not person.is_cured:
+            if self.rect.colliderect(person.rect) and not self.__is_sick and person.__is_sick and not person.is_cured:
                 if random.randint(0, 100) <= 6: ## Currently there's 6% change to catch COVID while outdoors
                     self.person_sick()
         pass
