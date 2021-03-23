@@ -69,29 +69,28 @@ while mainloop:
                 person.clicked(event.pos)
             start = event.pos
             size = 0, 0
-            #drawing = True
-            points.append(event.pos)
+            drawing = True
+            # points.append(event.pos)
             drawing = True
             if button.collidepoint(event.pos):
-                print ("You press button")
                 analytics.print_stats()
                 analytics.plot_data()
         elif event.type == pygame.MOUSEBUTTONUP:
             drawing = False
-        elif event.type == pygame.MOUSEMOTION and drawing:
-            points[-1] = event.pos
-        #screen.fill(settings.BLACK)
-    if len(points)>1:
-        rect = pygame.draw.lines(screen, settings.BLACK, False, points, 5)
-        #pygame.draw.rect(screen, settings.GREEN, rect, 1)
-    pygame.display.update()
-        # elif event.type == pygame.MOUSEBUTTONUP:
-        #     end = event.pos
-        #     size = end[0] - start[0], end[1] - start[1]
-        #     drawing = False
         # elif event.type == pygame.MOUSEMOTION and drawing:
-        #     end = event.pos
-        #     size = end[0] - start[0], end[1] - start[1]
+        #     points[-1] = event.pos
+        #screen.fill(settings.BLACK)
+    # if len(points)>1:
+    #     rect = pygame.draw.lines(surface, settings.BLACK, False, points, 5)
+        #pygame.draw.rect(screen, settings.GREEN, rect, 1)
+    # pygame.display.update()
+        elif event.type == pygame.MOUSEBUTTONUP:
+            end = event.pos
+            size = end[0] - start[0], end[1] - start[1]
+            drawing = False
+        elif event.type == pygame.MOUSEMOTION and drawing:
+            end = event.pos
+            size = end[0] - start[0], end[1] - start[1]
 
     button = pygame.draw.rect(surface, settings.RED, (20, 10, 50, 26))
     font = pygame.font.SysFont(None, 19)

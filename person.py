@@ -124,14 +124,12 @@ class Person():
                 if random.randint(0, 100) <= self.__inf_prob: ## Currently there's 6% change to catch COVID while outdoors
                     self.person_sick()
     
+    def sign(self, num):
+        return -1 if num < 0 else 1
+    
     def move_out_wall(self, rect):
-        self.color = settings.GREEN
-        if self.rect.right > rect.left:
-            self.rect.right = rect.left
-        if self.rect.bottom > rect.top:
-            self.rect.bottom = rect.top
-        if self.rect.top > rect.bottom:
-            self.rect.top = rect.bottom
-        if self.rect.left > rect.right:
-            self.rect.left = rect.right
-        
+        self.targetVector = ((self.targetVector[0] + 10*self.sign(self.targetVector[0]))*-1,
+            (self.targetVector[1] + 10*self.sign(self.targetVector[1]))*-1)
+        # self.targetPoint = (self.rect.centerx+self.targetVector[0], self.rect.centery+self.targetVector[1])
+        self.targetReached = True
+        self.rect.move_ip(self.targetVector)
