@@ -2,6 +2,7 @@ import pygame
 import settings
 import random
 from analytics import GameAnalytics
+import asyncio
 
 from person import Person
 from wall import Wall
@@ -26,6 +27,9 @@ pygame.display.set_caption(game_state.settings.title)
 
 surface = pygame.Surface(screen.get_size())
 surface.fill(game_state.settings.bg_color)
+
+analytic_surface = pygame.Surface(screen.get_size())
+analytic_surface.fill(game_state.settings.bg_color)
 
 p1 = Person(surface, True, x=200, y=200, game_state=game_state)
 p2 = Person(surface, x=250, y=250, game_state=game_state)
@@ -73,8 +77,8 @@ while mainloop:
             # points.append(event.pos)
             drawing = True
             if button.collidepoint(event.pos):
-                ## analytics.print_stats()
-                analytics.plot_data()
+                analytics.print_stats()
+                ## analytics.plot_data()
         elif event.type == pygame.MOUSEBUTTONUP:
             drawing = False
         # elif event.type == pygame.MOUSEMOTION and drawing:
@@ -107,8 +111,8 @@ while mainloop:
         person.check_collisions(persons)
         person.random_move()
         person.draw()
-    screen.blit(surface, (0,0))
-    screen.blit(img, (20, 20))
+    ## REMOVE #s from these lines later!!!! screen.blit(surface, (0,0))
+    ##screen.blit(img, (20, 20))
 
 
     
@@ -117,8 +121,8 @@ while mainloop:
     pygame.display.flip()
     clock.tick(game_state.settings.tick_rate)
     game_state.analytics.update_stats()
+    analytic_surface =  analytics.plot_data()
+    screen.blit(analytic_surface, (5, 5))
 
 
 pygame.quit()
-
-
