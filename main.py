@@ -73,7 +73,7 @@ while mainloop:
             # points.append(event.pos)
             drawing = True
             if button.collidepoint(event.pos):
-                analytics.print_stats()
+                ## analytics.print_stats()
                 analytics.plot_data()
         elif event.type == pygame.MOUSEBUTTONUP:
             drawing = False
@@ -92,9 +92,9 @@ while mainloop:
             end = event.pos
             size = end[0] - start[0], end[1] - start[1]
 
-    button = pygame.draw.rect(surface, settings.RED, (20, 10, 50, 26))
+    button = pygame.draw.rect(surface, settings.WHITE, (20, 10, 50, 26))
     font = pygame.font.SysFont(None, 19)
-    img = font.render('График', True, settings.BLUE)
+    img = font.render('График', True, settings.BLACK)
 
 
     wall = pygame.draw.rect(surface, settings.BLACK, (start, size))
